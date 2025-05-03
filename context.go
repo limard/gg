@@ -122,7 +122,7 @@ func (dc *Context) GetCurrentPoint() (Point, bool) {
 }
 
 // Image returns the image that has been drawn by this context.
-func (dc *Context) Image() image.Image {
+func (dc *Context) Image() *image.RGBA {
 	return dc.im
 }
 
@@ -883,6 +883,12 @@ func (dc *Context) ShearAbout(sx, sy, x, y float64) {
 	dc.Translate(x, y)
 	dc.Shear(sx, sy)
 	dc.Translate(-x, -y)
+}
+
+// Matrix are used to update the current transformation
+// matrix in the context.
+func (dc *Context) Matrix(xx, yx, xy, yy, x0, y0 float64) {
+	dc.matrix = Matrix{xx, yx, xy, yy, x0, y0}
 }
 
 // TransformPoint multiplies the specified point by the current matrix,
