@@ -2,7 +2,6 @@ package gg
 
 import (
 	"crypto/md5"
-	"flag"
 	"fmt"
 	"image/color"
 	"math/rand"
@@ -11,10 +10,10 @@ import (
 
 var save bool
 
-func init() {
-	flag.BoolVar(&save, "save", false, "save PNG output for each test case")
-	flag.Parse()
-}
+// func init() {
+// 	flag.BoolVar(&save, "save", false, "save PNG output for each test case")
+// 	flag.Parse()
+// }
 
 func hash(dc *Context) string {
 	return fmt.Sprintf("%x", md5.Sum(dc.im.Pix))
@@ -319,5 +318,27 @@ func BenchmarkCircles(b *testing.B) {
 			dc.SetRGB(1, 1, 1)
 		}
 		dc.Fill()
+	}
+}
+
+func Benchmark_DrawImageAnchored(b *testing.B) {
+	img, err := LoadImage(`D:\testdata\image\j4.jpg`)
+	if err != nil {
+		panic(err)
+	}
+	context := NewContext(1024, 1024)
+	context.SetRGB255(0xFF, 0xFF, 0xFF)
+	context.DrawRectangle(0, 0, float64(context.Width()), float64(context.Height()))
+	context.Fill()
+	for i := 0; i < b.N; i++ {
+		// NearestNeighbor
+		// 1171            955494 ns/op            5036 B/op          0 allocs/op
+		// ApproxBiLinear
+		// 1203            981454 ns/op            4906 B/op          0 allocs/op
+		// BiLinear
+		// 127           8320222 ns/op           46482 B/op          2 allocs/op
+		// CatmullRom
+		// 78          14415308 ns/op           75700 B/op          2 allocs/op
+		context.DrawImageAnchored(img, 10, 10, 0, 0)
 	}
 }

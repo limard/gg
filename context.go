@@ -281,6 +281,18 @@ func (dc *Context) SetRGB(r, g, b float64) {
 	dc.SetRGBA(r, g, b, 1)
 }
 
+// SetCMYK sets the current color using CMYK values (0-1).
+// c, m, y, k values should be between 0 and 1, inclusive.
+func (dc *Context) SetCMYK(c, m, y, k float64) {
+	// Convert CMYK to RGB
+	r := uint8((1.0 - c) * (1.0 - k) * 255)
+	g := uint8((1.0 - m) * (1.0 - k) * 255)
+	b := uint8((1.0 - y) * (1.0 - k) * 255)
+
+	dc.color = color.NRGBA{r, g, b, 255}
+	dc.setFillAndStrokeColor(dc.color)
+}
+
 // Path Manipulation
 
 // MoveTo starts a new subpath within the current path starting at the
