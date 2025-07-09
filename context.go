@@ -60,6 +60,7 @@ type Context struct {
 	im            *image.RGBA
 	mask          *image.Alpha
 	color         color.Color
+	strokeColor   color.Color
 	fillPattern   Pattern
 	strokePattern Pattern
 	strokePath    raster.Path
@@ -273,6 +274,26 @@ func (dc *Context) SetRGBA(r, g, b, a float64) {
 		uint8(a * 255),
 	}
 	dc.setFillAndStrokeColor(dc.color)
+}
+
+func (dc *Context) SetFillRGBA(r, g, b, a float64) {
+	dc.color = color.NRGBA{
+		uint8(r * 255),
+		uint8(g * 255),
+		uint8(b * 255),
+		uint8(a * 255),
+	}
+	dc.fillPattern = NewSolidPattern(dc.color)
+}
+
+func (dc *Context) SetStrokeRGBA(r, g, b, a float64) {
+	dc.strokeColor = color.NRGBA{
+		uint8(r * 255),
+		uint8(g * 255),
+		uint8(b * 255),
+		uint8(a * 255),
+	}
+	dc.strokePattern = NewSolidPattern(dc.strokeColor)
 }
 
 // SetRGB sets the current color. r, g, b values should be between 0 and 1,

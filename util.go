@@ -144,3 +144,10 @@ func LoadFontFace(path string, points float64) (font.Face, error) {
 	})
 	return face, nil
 }
+
+func CMYKToRGB(c, m, y, k float64) (r, g, b float64) {
+	r = (1 - c) * (1 - k)
+	g = (1 - m) * (1 - k)
+	b = (1 - y) * (1 - k)
+	return
+}
